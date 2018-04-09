@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}上海堡垒{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        {% if current_user.is_authenticated %}
+            <h1>Hello, {{ current_user.username }} !</h1>
+            <p>很高兴再次见到你！</p>
+        {% else %}
+            <h1>你好！</h1>
+            <p>欢迎来到上海堡垒</p>
+        {% endif %}
+        </div>
+
+    <p>当地时间是 {{ moment(current_time).format('LLL') }}</p>
+    <p>{{ moment(current_time).fromNow(refresh=True) }}</p>
+{% endblock %}

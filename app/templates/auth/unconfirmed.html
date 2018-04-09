@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}上海堡垒 - 激活账户{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>
+        您好, {{ current_user.username }}!
+    </h1>
+    <h3>您的账户还没有验证</h3>
+
+    <p>
+        在您访问本网站之前, 您需要确认您的帐户。
+    </p>
+    <p>
+        检查您的邮箱, 您应该收到了一封带有确认链接的电子邮件。
+    </p>
+    <p>
+        <a href="{{ url_for('auth.resend_confirmation') }}">点这里重新发送邮件</a>
+    </p>
+</div>
+{% endblock %}

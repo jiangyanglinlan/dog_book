@@ -1,0 +1,7 @@
+{{ user.username }},
+
+点击下面的链接以确认您的新邮箱地址:
+
+{{ url_for('auth.change_email', token=token, _external=True) }}
+
+上海堡垒

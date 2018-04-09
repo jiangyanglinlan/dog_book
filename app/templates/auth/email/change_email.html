@@ -1,0 +1,7 @@
+<p>{{ user.username }},</p>
+<p><a href="{{ url_for('auth.change_email', token=token, _external=True) }}">点击这里确认你的新邮箱地址</a>.</p>
+<p>或者, 您可以将以下链接粘贴到浏览器的中:</p>
+<p>{{ url_for('auth.change_email', token=token, _external=True) }}</p>
+<p>如果您没有在此网站发送过修改邮箱的请求, 您可以忽略这个邮件</p>
+
+<p>上海堡垒</p>
