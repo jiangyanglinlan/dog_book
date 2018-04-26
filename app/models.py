@@ -60,6 +60,7 @@ class User(UserMixin, db.Model):
     member_since = db.Column(db.DateTime(), default=datetime.utcnow) # 注册时间
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow) # 最后登录
     avatar_hash = db.Column(db.String(32)) # avatar 头像 url 的 MD5 散列值
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -164,7 +165,6 @@ class User(UserMixin, db.Model):
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(url=url, hash=hash, size=size, default=default, rating=rating)
 
 
-
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):
         return False
@@ -172,6 +172,13 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
+
+class Post(db.Model):
+    __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 login_manager.anonymous_user = AnonymousUser
 

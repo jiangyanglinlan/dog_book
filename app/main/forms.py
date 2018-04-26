@@ -38,3 +38,9 @@ class EditProfileAdminForm(FlaskForm):
     def validate_username(self, field):
         if field.data != self.user.username and User.query.filter_by(username=field.data).first():
             raise ValidationError('用户名已存在')
+
+
+class PostForm(FlaskForm):
+    body = TextAreaField('正文', validators=[DataRequired()])
+    submit = SubmitField('提交')
+

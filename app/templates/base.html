@@ -2,8 +2,12 @@
 
 {% block title %}上海堡垒{% endblock %}
 
-{% block navbar %}
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+{% endblock %}
 
+{% block navbar %}
     <div class="navbar navbar-inverse" role="navigation">
         <div class="container">
             <div class="navbar-header">

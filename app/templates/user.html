@@ -5,8 +5,8 @@
 {% block page_content%}
 <div class="page-header">
     <img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=256) }}">
-    <div>
-    <h1>{{ user.username }}</h1>
+    <div class="profile-header">
+        <h1>{{ user.username }}</h1>
         <p>
             {% if user.name or user.location %}
                 {% if user.name %}
@@ -26,6 +26,8 @@
                 <br>
                 <br>
                 邮箱: {{ user.email }}
+                <br>
+                <br>
             {% endif %}
 
             {% if user.about_me %}
@@ -34,8 +36,8 @@
                 <br>
             {% endif %}
                 注册时间: {{ moment(user.member_since).format('YYYY年M月D日')}}。
-            <br>
-            <br>
+                <br>
+                <br>
                 最后登录: {{ moment(user.last_seen).fromNow() }}。
         </p>
     </div>
@@ -45,4 +47,6 @@
     编辑资料
 </a>
 {% endif %}
+<h3>作者: {{ user.username }}</h3>
+{% include '_posts.html' %}
 {% endblock %}
