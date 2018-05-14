@@ -16,6 +16,13 @@
                         {{ post.body }}
                     {% endif %}
                 </div>
+                {% if posts|count != 1%}
+                <div class="post-footer">
+                    <a href="{{ url_for('.post', id=post.id) }}">
+                        <span class="label label-default">查看</span>
+                    </a>
+                </div>
+                {% endif %}
             </div>
         </li>
     {% endfor %}

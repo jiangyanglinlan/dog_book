@@ -31,7 +31,7 @@ class Role(db.Model):
         roles = {
             'User': (Permission.FOLLOW|
                      Permission.COMMENT|
-                     Permission.WRITE_ARTICLES, True),
+                     Permission.WRITE_ARTICLES, True), # 用户
             'Moderator': (Permission.FOLLOW|
                           Permission.COMMENT|
                           Permission.WRITE_ARTICLES|
@@ -238,9 +238,9 @@ def load_user(user_id):
 
 
 class Permission:
-    FOLLOW = 0x01
-    COMMENT = 0x02
-    WRITE_ARTICLES = 0x04
-    MODERATE_COMMENTS = 0x08
-    ADMINISTER = 0x80
+    FOLLOW = 0x01 # 关注用户
+    COMMENT = 0x02 # 发表评论
+    WRITE_ARTICLES = 0x04 # 写文章
+    MODERATE_COMMENTS = 0x08 # 管理他人发表的评论
+    ADMINISTER = 0x80 # 管理员权限
 
