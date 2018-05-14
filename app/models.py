@@ -5,7 +5,9 @@ from flask import current_app, request
 from flask_login import UserMixin, AnonymousUserMixin
 from . import login_manager, db
 from datetime import datetime
+from markdown import markdown
 import hashlib
+import bleach
 
 
 @login_manager.user_loader
@@ -201,6 +203,7 @@ class Post(db.Model):
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    body_html = db.Column(db.Text)
 
     @staticmethod
     def generate_fake(count=100):
@@ -216,6 +219,15 @@ class Post(db.Model):
                      author=u)
             db.session.add(p)
             db.session.commit()
+
+    @staticmethod
+    def on_changed_body(target, value, old_value, initator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']
+        target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format='html'), tags=allowed_tags, strip=True))
+
+
+db.event.listen(Post.body, 'set', Post.on_changed_body)
+
 
 login_manager.anonymous_user = AnonymousUser
 
