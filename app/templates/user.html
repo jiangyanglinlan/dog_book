@@ -39,7 +39,38 @@
                 <br>
                 <br>
                 最后登录: {{ moment(user.last_seen).fromNow() }}。
+            <br>
+            <br>
+            发表了 {{ user.posts.count() }} 篇博客
         </p>
+
+        {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+            {% if not current_user.is_following(user) %}
+                <a href="{{ url_for('.follow', username=user.username) }}" class="btn btn-primary">
+                    关注
+                </a>
+            {% else %}
+                <a href="{{ url_for('.unfollow', username=user.username) }}" class="btn btn-primary">
+                    取消关注
+                </a>
+            {% endif %}
+        {% endif %}
+
+        <a href="{{ url_for('.followers', username=user.username) }}">
+            <span class="badge">{{ user.followers.count() }} 个关注他的人</span>
+        </a>
+
+        <a href="{{ url_for('.followed_by', username=user.username)}}">
+            他关注了 <span class="badge">{{ user.followed.count() }}</span> 个人
+        </a>
+
+        {% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
+            {% if current_user.is_following(user) %}
+                | <span class="label label-default">互相关注</span>
+            {% else %}
+                | <span class="label label-default">他关注了你</span>
+            {% endif %}
+        {% endif %}
     </div>
 </div>
 {% if user == current_user %}
