@@ -79,7 +79,6 @@ def resend_confirmation():
 @auth.route('/change_password', methods=['GET', 'POST'])
 @login_required
 def change_password():
-    print('123')
     form = ChangePasswordForm()
     if form.validate_on_submit():
         print('hah')
