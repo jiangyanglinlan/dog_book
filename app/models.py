@@ -205,20 +205,37 @@ class User(UserMixin, db.Model):
                 db.session.rollback()
 
     def follow(self, user):
+        '''
+        关注 user 
+        '''
         if not self.is_following(user):
             f = Follow(follower=self, followed=user)
             db.session.add(f)
 
     def unfollow(self, user):
+        '''
+        取消关注 user
+        '''
         f = self.followed.filter_by(followed_id=user.id).first()
         if f:
             db.session.delete(f)
 
     def is_following(self, user):
+        '''
+        判断是否关注了 user
+        '''
         return self.followed.filter_by(followed_id=user.id).first() is not None
 
     def is_followed_by(self, user):
+        '''
+        判断 user 是否关注了自己
+        '''
         return self.followers.filter_by(follower_id=user.id).first() is not None
+
+
+    @property
+    def followed_posts(self):
+        return Post.query.join(Follow, Follow.followed_id == Post.author_id).filter(Follow.follower_id == self.id)
 
 
 class AnonymousUser(AnonymousUserMixin):
