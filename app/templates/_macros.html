@@ -23,7 +23,7 @@
         {% endif %}
     {% endfor %}
     <li {% if not pagination.has_next %} class="disabled" {% endif %}>
-        <a href="{% if pagination.has_next %}{{ url_for(endpoint, page = pagination.page + 1, **kwargs) }}{% else %}#{% endif %}">
+        <a href="{% if pagination.has_next %}{{ url_for(endpoint, page=pagination.page.next_num, **kwargs) }}{% else %}#{% endif %}">
             &raquo;
         </a>
     </li>
