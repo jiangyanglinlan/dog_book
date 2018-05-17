@@ -141,13 +141,16 @@ def follow(username):
 
 @main.route('/followers/<username>')
 def followers(username):
+    '''
+    得到关注 username==username  的 user 
+    '''
     user = User.query.filter_by(username=username).first()
     if user is None:
         flash('不存在的用户')
         return redirect(url_for('.index'))
     page = request.args.get('page', 1, type=int)
     pagination = user.followers.paginate(page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'], error_out=False)
-    follows = [{'user': item.follower, 'timestamp': item.timestamp} for item in pagination.items]
+    follows = [{'user': item.follower, 'timestamp': item.timestamp} for item in pagination.items if not item.follower.username == username]
     return render_template('followers.html', user=user, title='关注', endpoint='.followers', pagination=pagination, follows=follows)
 
 
