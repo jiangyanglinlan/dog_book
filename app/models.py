@@ -74,11 +74,11 @@ class User(UserMixin, db.Model):
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
                                lazy='dynamic',
-                               cascade='all, delete-orphan')
+                               cascade='all, delete-orphan') # 关注的人
     followers = db.relationship('Follow',
                                 foreign_keys=[Follow.followed_id],
                                 backref=db.backref('followed', lazy='joined'),
-                                lazy='dynamic', cascade='all, delete-orphan')
+                                lazy='dynamic', cascade='all, delete-orphan') # 关注我的人
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -89,6 +89,7 @@ class User(UserMixin, db.Model):
                 self.role = Role.query.filter_by(default=True).first()
         if self.email is not None and self.avatar_hash is None:
             self.avatar_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
+        self.follow(self) # 关注自己
 
 
     @property
@@ -124,6 +125,9 @@ class User(UserMixin, db.Model):
 
     @staticmethod
     def reset_password(token, new_password):
+        """
+        重置密码
+        """
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token.encode('utf-8'))
@@ -232,10 +236,17 @@ class User(UserMixin, db.Model):
         '''
         return self.followers.filter_by(follower_id=user.id).first() is not None
 
-
     @property
     def followed_posts(self):
         return Post.query.join(Follow, Follow.followed_id == Post.author_id).filter(Follow.follower_id == self.id)
+
+    @staticmethod
+    def add_self_follows():
+        for user in User.query.all():
+            if not user.is_following(user):
+                user.follow(user)
+                db.session.add(user)
+                db.session.commit()
 
 
 class AnonymousUser(AnonymousUserMixin):
