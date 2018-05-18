@@ -16,7 +16,7 @@
                         {{ post.body }}
                     {% endif %}
                 </div>
-                {% if posts|count != 1%}
+                {% if posts|count != 0%}
                 <div class="post-footer">
                     <a href="{{ url_for('.post', id=post.id) }}">
                         <span class="label label-default">查看</span>
@@ -25,10 +25,16 @@
                         <a href="{{ url_for('.edit', id=post.id) }}">
                             <span class="label label-primary"> 编辑 </span>
                         </a>
+                        <a href="javascript:;" onclick="if(confirm('您确定删除这条博客？')){location.href='{{ url_for('.post_delete', id=post.id) }}';}">
+                            <span class="label label-danger"> 删除 </span>
+                        </a>
                     {% elif current_user.is_administrator() %}
-                    <a href="{{ url_for('.edit', id=post.id) }}">
-                        <span class="label label-danger"> 编辑(管理员) </span>
-                    </a>
+                        <a href="{{ url_for('.edit', id=post.id) }}">
+                            <span class="label label-warning"> 编辑(管理员) </span>
+                        </a>
+                        <a href="javascript:;" onclick="if(confirm('您确定删除这条博客？')){location.href='{{ url_for('.post_delete', id=post.id) }}';}">
+                                <span class="label label-danger"> 删除(管理员) </span>
+                        </a>
                     {% endif %}
                 </div>
                 {% endif %}

@@ -107,6 +107,15 @@ def post(id):
     return render_template('post.html', posts=[post])
 
 
+@main.route('/post/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def post_delete(id):
+    post = Post.query.filter_by(id=id).first()
+    db.session.delete(post)
+    db.session.commit()
+    return redirect(url_for('.index'))
+
+
 @main.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit(id):
