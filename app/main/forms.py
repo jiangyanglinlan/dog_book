@@ -45,3 +45,7 @@ class PostForm(FlaskForm):
     body = PageDownField('正文', validators=[DataRequired()]) # Markdown 编辑器
     submit = SubmitField('提交')
 
+
+class CommentForm(FlaskForm):
+    body = StringField('', validators=[DataRequired()])
+    submit = SubmitField('评论')
