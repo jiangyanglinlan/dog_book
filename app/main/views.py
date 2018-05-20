@@ -214,7 +214,7 @@ def followed_by(username):
         page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
         error_out=False)
     follows = [{'user': item.followed, 'timestamp': item.timestamp}
-               for item in pagination.items]
+               for item in pagination.items if item.followed != user]
     return render_template('followers.html', user=user, title="关注", endpoint='.followed_by', pagination=pagination, follows=follows)
 
 
