@@ -127,6 +127,8 @@ def post_delete(id):
     if current_user != post.author and not current_user.can(Permission.ADMINISTER):
         flash('你没有相关权限')
         return render_template('403.html'), 403
+    for comment in post.comments:
+        db.session.delete(comment)
     db.session.delete(post)
     db.session.commit()
     return redirect(url_for('.index'))
