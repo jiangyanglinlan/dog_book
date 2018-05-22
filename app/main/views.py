@@ -248,3 +248,19 @@ def moderate_disable(id):
     comment.disabled = True
     db.session.add(comment)
     return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
+
+
+@main.route('/post/<int:p_id>/comment/delete/<int:c_id>')
+@login_required
+def comment_delete(p_id, c_id):
+    comment = Comment.query.filter_by(id=c_id).first()
+    if comment.author != current_user and not current_user.can(Permission.ADMINISTER):
+        flash('你没有相关权限')
+        return render_template('403.html'), 403
+    db.session.delete(comment)
+    db.session.commit()
+    flash('删除成功')
+    return redirect(url_for('.post', id=p_id))
+
+
+

@@ -20,6 +20,17 @@
                         {{ comment.body }}
                     {% endif %}
                 {% endif %}
+                <div class="post-footer">
+                    {% if current_user == comment.author %}
+                        <a href="javascript:;" onclick="if(confirm('您确定删除这条评论？')){location.href='{{ url_for('.comment_delete', p_id=comment.post_id, c_id=comment.id) }}';}">
+                            <span class="label label-danger">删除</span>
+                        </a>
+                    {% elif current_user.is_administrator() %}
+                        <a href="javascript:;" onclick="if(confirm('您确定删除这条评论？')){location.href='{{ url_for('.comment_delete', p_id=comment.post_id, c_id=comment.id) }}';}">
+                            <span class="label label-danger">删除(管理员)</span>
+                        </a>
+                    {% endif %}
+                </div>
             </div>
             {% if moderate %}
                 <br>
