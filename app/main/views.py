@@ -107,11 +107,12 @@ def post(id):
                           post=post,
                           author=current_user._get_current_object())
         db.session.add(comment)
+        db.session.commit()
         flash('评论成功')
         return redirect(url_for('.post', id=post.id, page=-1))
     page = request.args.get('page', 1, type=int)
     if page == -1:
-        page = (post.comments.count() - 1) / current_app.config['FLASKY_COMMENTS_PER_PAGE'] + 1
+        page = (post.comments.count() - 1) // current_app.config['FLASKY_COMMENTS_PER_PAGE'] + 1
     pagination = post.comments.order_by(Comment.timestamp.asc()).paginate(
         page, per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
         error_out=False)
@@ -247,4 +248,3 @@ def moderate_disable(id):
     comment.disabled = True
     db.session.add(comment)
     return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
-
