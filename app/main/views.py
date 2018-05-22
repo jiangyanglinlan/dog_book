@@ -1,13 +1,10 @@
-from datetime import datetime
-from flask import render_template, session, redirect, url_for, current_app, abort, flash, request, make_response
+from flask import render_template, redirect, url_for, current_app, abort, flash, request, make_response
 from flask_login import login_required, current_user
-
 from .. import db
 from ..models import User, Role, Post, Comment, Permission
-from ..email import send_email
 from ..decorators import admin_required, permission_required
 from . import main
-from .forms import NameForm, EditProfileForm, EditProfileAdminForm, PostForm, CommentForm
+from .forms import EditProfileForm, EditProfileAdminForm, PostForm, CommentForm
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -30,31 +27,6 @@ def index():
                                                                      error_out=False)
     posts = pagination.items
     return render_template('index.html', form=form, posts=posts, show_followed=show_followed, pagination=pagination)
-
-
-# @main.route('/', methods=['GET', 'POST'])
-# def index():
-#     form = PostForm()
-#     if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
-#         post = Post(body=form.body.data,
-#                     author=current_user._get_current_object())
-#         db.session.add(post)
-#         db.session.commit()
-#         return redirect(url_for('.index'))
-#     page = request.args.get('page', 1, type=int)
-#     show_followed = False
-#     if current_user.is_authenticated:
-#         show_followed = bool(request.cookies.get('show_followed', ''))
-#     if show_followed:
-#         query = current_user.followed_posts
-#     else:
-#         query = Post.query
-#     pagination = query.order_by(Post.timestamp.desc()).paginate(
-#         page, per_page=current_app.config['FLASKY_POST_PER_PAGE'],
-#         error_out=False)
-#     posts = pagination.items
-#     return render_template('index.html', form=form, posts=posts,
-#                            show_followed=show_followed, pagination=pagination)
 
 
 @main.route('/all')
@@ -151,6 +123,9 @@ def post(id):
 @login_required
 def post_delete(id):
     post = Post.query.filter_by(id=id).first()
+    if current_user != post.author and not current_user.can(Permission.ADMINISTER):
+        flash('你没有相关权限')
+        return render_template('403.html'), 403
     db.session.delete(post)
     db.session.commit()
     return redirect(url_for('.index'))
@@ -161,7 +136,8 @@ def post_delete(id):
 def edit(id):
     post = Post.query.get_or_404(id)
     if current_user != post.author and not current_user.can(Permission.ADMINISTER):
-        abort(403)
+        flash('你没有相关权限')
+        return render_template('403.html'), 403
     form = PostForm()
     if form.validate_on_submit():
         post.body = form.body.data
@@ -271,3 +247,4 @@ def moderate_disable(id):
     comment.disabled = True
     db.session.add(comment)
     return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
+
