@@ -126,7 +126,7 @@ def post_delete(id):
     post = Post.query.filter_by(id=id).first()
     if current_user != post.author and not current_user.can(Permission.ADMINISTER):
         flash('你没有相关权限')
-        return render_template('403.html'), 403
+        abort(403)
     for comment in post.comments:
         db.session.delete(comment)
     db.session.delete(post)
@@ -140,7 +140,7 @@ def edit(id):
     post = Post.query.get_or_404(id)
     if current_user != post.author and not current_user.can(Permission.ADMINISTER):
         flash('你没有相关权限')
-        return render_template('403.html'), 403
+        abort(403)
     form = PostForm()
     if form.validate_on_submit():
         post.body = form.body.data
@@ -258,7 +258,7 @@ def comment_delete(p_id, c_id):
     comment = Comment.query.filter_by(id=c_id).first()
     if comment.author != current_user and not current_user.can(Permission.ADMINISTER):
         flash('你没有相关权限')
-        return render_template('403.html'), 403
+        abort(403)
     db.session.delete(comment)
     db.session.commit()
     flash('删除成功')
