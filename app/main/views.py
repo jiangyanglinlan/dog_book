@@ -62,7 +62,7 @@ def edit_profile():
         current_user.name = form.name.data
         current_user.location = form.location.data
         current_user.about_me = form.about_me.data
-        db.session.add(current_user)
+        db.session.commit()
         flash('您的资料已更新')
         return redirect(url_for('.user', username=current_user.username))
     form.name.data = current_user.name
@@ -85,7 +85,7 @@ def edit_profile_admin(id):
         user.name = form.name.data
         user.location = form.location.data
         user.about_me = form.about_me.data
-        db.session.add(user)
+        db.session.commit()
         flash('您的资料已更新')
         return redirect(url_for('.user', username=user.username))
     form.email.data = user.email
@@ -144,7 +144,7 @@ def edit(id):
     form = PostForm()
     if form.validate_on_submit():
         post.body = form.body.data
-        db.session.add(post)
+        db.session.commit()
         flash('文章更新成功')
         return redirect(url_for('.post', id=post.id))
     form.body.data = post.body
@@ -192,6 +192,7 @@ def followed_by(username):
     pagination = user.followed.paginate(
         page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
         error_out=False)
+    print(type(pagination.items))
     follows = [{'user': item.followed, 'timestamp': item.timestamp}
                for item in pagination.items if item.followed != user]
     return render_template('followers.html', user=user, title="关注", endpoint='.followed_by', pagination=pagination, follows=follows)
@@ -235,7 +236,7 @@ def moderate_enable(id):
     '''
     comment = Comment.query.get_or_404(id)
     comment.disabled = False
-    db.session.add(comment)
+    db.session.commit()
     return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
 
 
@@ -248,7 +249,7 @@ def moderate_disable(id):
     '''
     comment = Comment.query.get_or_404(id)
     comment.disabled = True
-    db.session.add(comment)
+    db.session.commit()
     return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
 
 

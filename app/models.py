@@ -139,7 +139,7 @@ class User(UserMixin, db.Model):
         if user is None:
             return False
         user.password = new_password
-        db.session.add(user)
+        db.session.commit()
         return True
 
     def generate_email_change_token(self, new_email, expiration=3600):
@@ -161,7 +161,7 @@ class User(UserMixin, db.Model):
             return False
         self.email = new_email
         self.avatar_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
-        db.session.add(self)
+        db.session.commit()
         return True
 
     def can(self, permissions):
