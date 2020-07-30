@@ -6,7 +6,7 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'jiangyanglinlan'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     FLASKY_MAIL_SUBJECT_PREFIX = '[上海堡垒]'
-    FLASKY_MAIL_SENDER = '1815212328@qq.com'
+    FLASKY_MAIL_SENDER = 'jiangyanglinlan@qq.com'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
     FLASKY_POST_PER_PAGE = 7
     FLASKY_FOLLOWERS_PER_PAGE = 10
